@@ -25,15 +25,7 @@ txt_col <- "black"
 
 showtext_auto(enable = TRUE)
 
-
-
-Date_of_maturity <- c("2033-03-23","2031-09-17","2029-05-23","2026-09-16","2027-02-03","2022-12-7")
-Price <- c(75.195,81.60, 79.60,90.01, 89.8, 99.98)
-tibble(Date_of_maturity, Price) %>% 
-  ggplot(aes(x=Date_of_maturity, y=Price, group=1)) +
-  geom_line()
-
-ofz_init_df <- readr::read_csv("/Users/ulyssekhatinskyi/Documents/TOCHNY/Research/OFZ/OFZ_auction.csv")
+ofz_init_df <- readr::read_csv("OFZ_auction.csv")
 
 ofz_init_df %>% 
   filter( type_of_placement =="OFZ.IN") %>% View()
