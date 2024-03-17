@@ -2,6 +2,8 @@ library(tidyverse)
 
 # Copy announcement from the FinMin in the clipboard
 
+# source : https://minfin.gov.ru/ru/perfomance/public_debt/internal/operations/ofz/auction
+
 clipbrd <-read.delim(pipe("pbpaste"))
 
 date_of_auction <-  clipbrd %>% 

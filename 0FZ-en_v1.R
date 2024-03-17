@@ -30,7 +30,6 @@ ofz_init_df <- readr::read_csv("OFZ_auction.csv")
 ofz_init_df %>% 
   filter( type_of_placement =="OFZ.IN") %>% View()
   
-type_i = "OFZ.PD"
 
 # Prep TOSCHNYI markings
 twitter_icon <- "&#xf099"
@@ -45,6 +44,10 @@ social_caption <- glue::glue("**Data:** minfin.gov.ru<br>",
 long_logo <- readPNG(paste0(getwd(),'/Tochnyi_Logo_copy.png'))
 
 
+type_i = "OFZ.PD"
+
+ofz_i = type_i %>% str_replace("\\.", '-')
+
 # Maturity
 ofz_init_df %>% 
   filter( type_of_placement ==type_i) %>% 
@@ -54,7 +57,7 @@ ofz_init_df %>%
   ggplot(aes(x=date_of_auction, y=maturity, group=1)) +
   geom_point(aes(size=Proceeds)) +
   geom_smooth(se = FALSE) +
-  ggtitle("Maturity and volume of\nRussia's bond issues (OFZ-PD)") +
+  ggtitle(glue::glue("Maturity and volume of\nRussia's bond issues (",ofz_i,")") )+
   coord_cartesian(clip = "off") +
   xlab("") +
   ylab("Years") +
@@ -102,7 +105,41 @@ ofz_init_df %>%
   filter( type_of_placement ==type_i) %>% 
   mutate(weighted_average_yield_num = weighted_average_yield %>% str_remove_all("%") %>% str_extract("([:digit:]{1,2}\\.[:digit:]{1,2})") %>% as.numeric())   %>%
   ggplot(aes(x=date_of_auction, y=weighted_average_yield_num, group=1)) +
-  geom_line()
+  geom_line() +
+  ggtitle(glue::glue("Yield of\nRussia's bond issues (",ofz_i,")") )+
+  coord_cartesian(clip = "off") +
+  xlab("") +
+  ylab("%") +
+  scale_y_continuous(breaks = seq(10, 15, by = 1)) +
+  theme(
+    plot.title = element_text(size=20, 
+                              face="bold",
+                              family=font, vjust = 1,
+                              hjust = 0.5, lineheight=1.5,
+                              margin= margin(0,0,30,0)),
+    panel.background = element_rect(fill = "white",
+                                    colour = "white",
+                                    size = 0.5, linetype = "solid"),
+    panel.grid.major = element_line(size = 0.5, linetype = 'solid',
+                                    colour = "grey"), 
+    panel.grid.minor = element_line(size = 0.25, linetype = 'solid',
+                                    colour = "lightgrey"),
+    axis.line.x = element_line(linewidth = .75),
+    axis.line.y = element_line(linewidth = .75),
+    panel.grid = element_blank(),
+    axis.title.y = element_text(size = 10),
+    axis.text.y= element_text(color=txt_col, size=10),
+    axis.text.x = element_text(color=txt_col, size=10,margin = margin(5,0,0,0)),
+    plot.margin = margin(20,30,10,30),
+    legend.position = "right",
+    legend.title = element_text(size=10),
+    legend.text = element_text(size=7),
+    legend.background = element_rect(fill = "lightgray"),
+    legend.box.margin = margin(0, 0, 0, 20),
+    plot.caption = element_markdown(hjust=0, margin=margin(10,0,0,0), size=8, color=txt_col, lineheight = 1.2)
+  ) + 
+  annotation_raster(long_logo, ymin = 19.8, ymax= 21.6, xmin = ymd(20221001),xmax = ymd(20221231))
+
 
 
 ofz_init_df %>% 
